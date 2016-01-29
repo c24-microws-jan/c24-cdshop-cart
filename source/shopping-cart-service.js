@@ -10,10 +10,7 @@ client.use(consul({
   servers: [
     'http://46.101.245.190:8500'
   ],
-  onlyHealthy: true, 
-  mapServers: function (list) {
-    return list.map(function (svc) { return 'http://' + svc.Service.Address + ':' + svc.Service.Port; });
-  }
+  onlyHealthy: true
 }));
 
 const handleResponse = function(resolve, reject, getData) {
