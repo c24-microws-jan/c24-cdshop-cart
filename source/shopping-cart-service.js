@@ -23,10 +23,10 @@ const handleResponse = function(resolve, reject, getData) {
             console.log(res.data);
             reject(res.data.error);
         } else {
-            const result = JSON.parse(res.data);
             if (!getData) {
-                resolve(result);  
+                resolve(res.data);  
             } else {
+                const result = JSON.parse(res.data);
                 resolve(getData(result));
             }                
         }
@@ -37,7 +37,8 @@ function createShoppingCart() {
     return new Promise((resolve, reject) => {
         const shoppingCart = {
             createdOn: new Date().toUTCString(),
-            products: []
+            products: [],
+            closedOn: null
         };
        
         const shoppingCartId = nodeUuid.v4().replace(/-/g, '');
@@ -50,7 +51,8 @@ function getShoppingCart(shoppingCartId) {
         client.get(`/c24-cdshop-cart/${shoppingCartId}`, handleResponse(resolve, reject, (obj) => {
             return {
                 createdOn: obj.createdOn,
-                products: obj.products
+                products: obj.products,
+                closedOn: obj.closedOn
             };
         }))
     });
