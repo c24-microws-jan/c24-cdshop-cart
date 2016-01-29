@@ -29,3 +29,43 @@ docker run -it -p 3000:3000 c24-cdshop-cart
 docker tag c24-cdshop-cart 46.101.193.82:5000/c24-cdshop-cart:1.0.0
 docker push 46.101.193.82:5000/c24-cdshop-cart:1.0.0
 ~~~
+
+
+### Create a shopping cart
+~~~
+PUT /shoppingcarts/<id>
+~~~
+
+### Get a shopping cart
+~~~
+GET /shoppingcarts/<id>
+~~~
+
+### Get products from shopping cart
+~~~
+GET /shoppingcarts/<id>/products
+~~~
+
+### Add product to shopping cart
+~~~
+POST /shoppingcarts/<id>/products
+{
+    productId: 0,
+    quantity: 2
+}
+~~~
+
+### Delete all products from shopping cart
+~~~
+DELETE /shoppingcarts/<id>/products
+~~~
+
+### Delete one product from shopping cart
+~~~
+DELETE /shoppingcarts/<id>/products/<productId>
+~~~
+
+### Close shopping cart
+~~~
+DELETE /shoppingcarts/<id>
+~~~

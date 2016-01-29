@@ -2,6 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+// services
+const shoppingCartApi = require('./source/shopping-cart-api');
+
+
 // Define some default values if not set in environment
 const PORT = process.env.PORT || 3000;
 const SHUTDOWN_TIMEOUT = process.env.SHUTDOWN_TIMEOUT || 10000;
@@ -21,16 +25,7 @@ app.get(SERVICE_CHECK_HTTP, function (req, res) {
   res.json({ message: 'OK' });
 });
 
-// Add all other service routes
-app.get('/', function (req, res) {
-  console.log('GET /');
-  res.send('Hello Workshop');
-});
-
-app.post('/', function (req, res) {
-  console.log('POST /', JSON.stringify(req.body));
-  res.status(201).end();
-});
+shoppingCartApi.registerEndpoints(app);
 
 // Start the server
 const server = app.listen(PORT);
