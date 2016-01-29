@@ -32,38 +32,43 @@ docker push 46.101.193.82:5000/c24-cdshop-cart:1.0.0
 
 
 ### Create a shopping cart
+## Request
 ~~~
-PUT /shoppingcarts/<id>
+PUT /shoppingcarts
 ~~~
+## Response
+Shopping cart id
+~~~
+110ec58aa0f24ac48393c866d813b8d1
+~~~
+
 
 ### Get a shopping cart
+## Request
 ~~~
-GET /shoppingcarts/<id>
+GET /shoppingcarts/<id>/
 ~~~
-
-### Get products from shopping cart
+## Response
 ~~~
-GET /shoppingcarts/<id>/products
-~~~
-
-### Add product to shopping cart
-~~~
-POST /shoppingcarts/<id>/products
 {
-    productId: 0,
-    quantity: 2
+    createdOn: 'Fri, 29 Jan 2016 13:23:15 GMT',
+    products: []
 }
 ~~~
 
-### Delete all products from shopping cart
+
+### Add product to shopping cart
+## Request
 ~~~
-DELETE /shoppingcarts/<id>/products
+POST /shoppingcarts/<id>/products/<productId>
 ~~~
+
 
 ### Delete one product from shopping cart
 ~~~
 DELETE /shoppingcarts/<id>/products/<productId>
 ~~~
+
 
 ### Close shopping cart
 ~~~
