@@ -1,4 +1,4 @@
-# hello-world-service
+# c24-cdshop-cart
 
 [![Build Status](https://travis-ci.org/c24-microws-jan/c24-cdshop-cart.svg)](https://travis-ci.org/c24-microws-jan/c24-cdshop-cart)
 [![Dependencies](https://david-dm.org/c24-microws-jan/c24-cdshop-cart.svg)](https://david-dm.org/badges/shields)
