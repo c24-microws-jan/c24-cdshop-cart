@@ -11,9 +11,27 @@ client.use(consul({
   ],
   onlyHealthy: true, 
   mapServers: function (list) {
-    return list.map(function (svc) { return 'http://' + svc.Service.Address + ':' + svc.Service.Port })
+    return list.map(function (svc) { return 'http://' + svc.Service.Address + ':' + svc.Service.Port; });
   }
 }));
+
+const handleResponse = function(resolve, reject, getData) {
+    return function (err, res) {
+        if (err !== null) {
+            reject(err);
+        } else if (res.data.error) {
+            console.log(res.data);
+            reject(res.data.error);
+        } else {
+            const result = JSON.parse(res.data);
+            if (!getData) {
+                resolve(result);  
+            } else {
+                resolve(getData(result));
+            }                
+        }
+    };
+};
 
 function createShoppingCart() {
     return new Promise((resolve, reject) => {
@@ -22,20 +40,23 @@ function createShoppingCart() {
             products: []
         };
        
-        const shoppingCartId = nodeUuid.v4().replace('-', '');
-        client.put(`/c24-cdshop-cart/${shoppingCartId}`, { data: shoppingCart }, function (err, res) {
-            if (err !== null) {
-                reject(err);
-            } else if (res.data.error) {
-                console.log(res.data);
-                reject(res.data.error);
-            } else {
-                resolve(res.data);                
-            }
-        }); 
+        const shoppingCartId = nodeUuid.v4().replace(/-/g, '');
+        client.put(`/c24-cdshop-cart/${shoppingCartId}`, { data: shoppingCart }, handleResponse(resolve, reject)); 
+    });
+}
+
+function getShoppingCart(shoppingCartId) {
+    return new Promise((resolve, reject) => {
+        client.get(`/c24-cdshop-cart/${shoppingCartId}`, handleResponse(resolve, reject, (obj) => {
+            return {
+                createdOn: obj.createdOn,
+                products: obj.products
+            };
+        }))
     });
 }
 
 module.exports = {
-    createShoppingCart
+    createShoppingCart,
+    getShoppingCart
 };
