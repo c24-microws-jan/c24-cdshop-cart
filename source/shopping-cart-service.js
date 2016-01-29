@@ -4,7 +4,6 @@ const nodeUuid = require('node-uuid');
 const resilient = require('resilient');
 const consul = require('resilient-consul');
 
-
 const client = resilient();
 client.use(consul({ 
   service: 'couchdb-cart',
@@ -88,8 +87,27 @@ function closeShoppingCart(shoppingCartId) {
         });
 }
 
+function addProductToShoppingCart(shoppingCartId, productId) {
+    return getShoppingCart(shoppingCartId, true)
+    .then((shoppingCart) => {
+        return new Promise((resolve, reject) => {
+            if (shoppingCart.closedOn) {
+                reject('Shopping cart is already closed!');
+            }
+            
+            if (shoppingCart.products.indexOf(productId) === -1) {
+                shoppingCart.products.push(productId);
+                client.put(`/c24-cdshop-cart/${shoppingCart._id}`, { data: shoppingCart }, handleResponse(resolve, reject)); 
+            } else {
+                resolve();
+            }        
+        });
+    });
+}
+
 module.exports = {
     createShoppingCart,
     getShoppingCart,
-    closeShoppingCart
+    closeShoppingCart,
+    addProductToShoppingCart
 };
