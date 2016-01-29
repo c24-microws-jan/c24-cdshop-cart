@@ -105,9 +105,29 @@ function addProductToShoppingCart(shoppingCartId, productId) {
     });
 }
 
+function removeProductFromShoppingCart(shoppingCartId, productId) {
+    return getShoppingCart(shoppingCartId, true)
+    .then((shoppingCart) => {
+        return new Promise((resolve, reject) => {
+            if (shoppingCart.closedOn) {
+                reject('Shopping cart is already closed!');
+            }
+            
+            const index = shoppingCart.products.indexOf(productId);
+            if (index !== -1) {
+                shoppingCart.products.splice(index, 1);
+                client.put(`/c24-cdshop-cart/${shoppingCart._id}`, { data: shoppingCart }, handleResponse(resolve, reject)); 
+            } else {
+                resolve();
+            }        
+        });
+    });
+}
+
 module.exports = {
     createShoppingCart,
     getShoppingCart,
     closeShoppingCart,
-    addProductToShoppingCart
+    addProductToShoppingCart,
+    removeProductFromShoppingCart
 };

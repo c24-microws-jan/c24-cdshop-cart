@@ -57,5 +57,22 @@ module.exports = {
                     }
                 });
         });
+        
+        app.delete('/shoppingcarts/:id/products/:productId', function (req, res) {
+            console.log(req.method + ' ' + req.route.path);
+            service.removeProductFromShoppingCart(req.params.id, req.params.productId)
+                .then(() => {
+                    res.status(200).end();
+                })
+                .catch(error => {
+                    console.log('ERROR: ' + req.method + ' ' + req.route.path);
+                    console.log(error);
+                    if (error) {
+                        res.status(400).send(error);
+                    } else {
+                        res.status(400).end();
+                    }
+                });
+        });
     }    
 };
