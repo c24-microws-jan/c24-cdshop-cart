@@ -3,7 +3,60 @@
 [![Build Status](https://travis-ci.org/c24-microws-jan/c24-cdshop-cart.svg)](https://travis-ci.org/c24-microws-jan/c24-cdshop-cart)
 [![Dependencies](https://david-dm.org/c24-microws-jan/c24-cdshop-cart.svg)](https://david-dm.org/badges/shields)
 
-This is an example of a node.js microservice
+
+### Create a shopping cart
+#### Request
+~~~
+PUT /shoppingcarts
+~~~
+#### Response
+Shopping cart id
+~~~
+201
+110ec58aa0f24ac48393c866d813b8d1
+~~~
+
+
+### Get a shopping cart
+#### Request
+~~~
+GET /shoppingcarts/<id>/
+~~~
+#### Response
+~~~
+200
+{
+    createdOn: 'Fri, 29 Jan 2016 13:23:15 GMT',
+    products: [],
+    closedOn: null
+}
+~~~
+
+
+### Close shopping cart
+#### Request
+~~~
+DELETE /shoppingcarts/<id>
+~~~
+#### Response
+~~~
+200
+~~~
+
+
+### Add product to shopping cart
+#### Request
+~~~
+POST /shoppingcarts/<id>/products/<productId>
+~~~
+
+
+### Delete one product from shopping cart
+~~~
+DELETE /shoppingcarts/<id>/products/<productId>
+~~~
+
+
 
 ## Run it on your local node.js installation
 
@@ -30,47 +83,3 @@ docker tag c24-cdshop-cart 46.101.193.82:5000/c24-cdshop-cart:1.0.0
 docker push 46.101.193.82:5000/c24-cdshop-cart:1.0.0
 ~~~
 
-
-### Create a shopping cart
-#### Request
-~~~
-PUT /shoppingcarts
-~~~
-#### Response
-Shopping cart id
-~~~
-110ec58aa0f24ac48393c866d813b8d1
-~~~
-
-
-### Get a shopping cart
-#### Request
-~~~
-GET /shoppingcarts/<id>/
-~~~
-#### Response
-~~~
-{
-    createdOn: 'Fri, 29 Jan 2016 13:23:15 GMT',
-    products: []
-}
-~~~
-
-
-### Add product to shopping cart
-#### Request
-~~~
-POST /shoppingcarts/<id>/products/<productId>
-~~~
-
-
-### Delete one product from shopping cart
-~~~
-DELETE /shoppingcarts/<id>/products/<productId>
-~~~
-
-
-### Close shopping cart
-~~~
-DELETE /shoppingcarts/<id>
-~~~

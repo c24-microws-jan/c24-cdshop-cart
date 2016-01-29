@@ -1,3 +1,5 @@
+'use strict';
+
 const nodeUuid = require('node-uuid');
 const resilient = require('resilient');
 const consul = require('resilient-consul');
@@ -26,8 +28,15 @@ const handleResponse = function(resolve, reject, getData) {
             if (!getData) {
                 resolve(res.data);  
             } else {
-                const result = JSON.parse(res.data);
-                resolve(getData(result));
+                let json;
+                if (typeof res.data === 'string') {
+                    json = JSON.parse(res.data);    
+                } else {
+                    json = res.data;
+                }
+                
+                const data = getData(json);
+                resolve(data);
             }                
         }
     };
@@ -42,23 +51,45 @@ function createShoppingCart() {
         };
        
         const shoppingCartId = nodeUuid.v4().replace(/-/g, '');
-        client.put(`/c24-cdshop-cart/${shoppingCartId}`, { data: shoppingCart }, handleResponse(resolve, reject)); 
+        client.put(
+            `/c24-cdshop-cart/${shoppingCartId}`, 
+            { data: shoppingCart }, 
+            handleResponse(resolve, reject, 
+            (jsonObject) => {
+                return jsonObject.id;
+            })); 
     });
 }
 
-function getShoppingCart(shoppingCartId) {
+function getShoppingCart(shoppingCartId, returnOriginal) {
     return new Promise((resolve, reject) => {
-        client.get(`/c24-cdshop-cart/${shoppingCartId}`, handleResponse(resolve, reject, (obj) => {
+        client.get(`/c24-cdshop-cart/${shoppingCartId}`, handleResponse(resolve, reject, (jsonObject) => {
+            if (returnOriginal) {
+                return jsonObject;
+            }
+            
             return {
-                createdOn: obj.createdOn,
-                products: obj.products,
-                closedOn: obj.closedOn
+                createdOn: jsonObject.createdOn,
+                products: jsonObject.products,
+                closedOn: jsonObject.closedOn
             };
         }))
     });
 }
 
+function closeShoppingCart(shoppingCartId) {
+    return getShoppingCart(shoppingCartId, true)
+        .then((shoppingCart) => {
+            return new Promise((resolve, reject) => {
+                shoppingCart.closedOn = new Date().toUTCString();
+            
+                client.put(`/c24-cdshop-cart/${shoppingCart._id}`, { data: shoppingCart }, handleResponse(resolve, reject)); 
+            });
+        });
+}
+
 module.exports = {
     createShoppingCart,
-    getShoppingCart
+    getShoppingCart,
+    closeShoppingCart
 };
